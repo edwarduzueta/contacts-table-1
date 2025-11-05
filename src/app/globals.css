@@ -1,0 +1,37 @@
+/* Keep Tailwind base if you want; this is simple CSS to mimic the Digits look */
+html, body {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+  margin: 0;
+  /* Sky-ish background */
+  background: radial-gradient(ellipse at top left, #e8f4ff 0%, #cfe9ff 35%, #bfe1ff 60%, #a6d4ff 100%);
+}
+
+/* Footer bar styling */
+.footer-bar {
+  background: #0a3aa0; /* UH blue-ish */
+  color: #ffffff;
+  padding: 24px 0;
+}
+.footer-bar a {
+  color: #ffffff;
+  text-decoration: underline;
+}
+.page-title {
+  font-size: 2.25rem; /* ~ h1 */
+  font-weight: 600;
+  text-align: center;
+  margin: 32px 0;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+}
+.card-col {
+  grid-column: span 12;
+}
+@media (min-width: 576px) { .card-col { grid-column: span 6; } }
+@media (min-width: 992px) { .card-col { grid-column: span 4; } }
