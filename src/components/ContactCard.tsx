@@ -1,30 +1,43 @@
-'use client';
-import Card from 'react-bootstrap/Card';
-import Image from 'next/image';
-
-export type Contact = {
+type Contact = {
+  id?: number; // defensive: may be missing
   firstName: string;
   lastName: string;
   address: string;
-  image: string;
-  description: string;
+  image?: string | null;
+  description?: string | null;
 };
 
-export default function ContactCard({ contact }: { contact: Contact }) {
-  const { firstName, lastName, address, image, description } = contact;
+// Accept either { contact: Contact } or flat props
+export default function ContactCard(
+  props: { contact: Contact } | (Contact & { contact?: never })
+) {
+  const c: Contact = "contact" in props && props.contact ? props.contact : (props as any);
+  const hasId = typeof c.id === "number" && Number.isFinite(c.id);
+  const editHref = hasId ? `/edit/${c.id}` : undefined;
+
   return (
-    <Card className="h-100 shadow-sm">
-      <Card.Body>
-        <div className="d-flex align-items-center gap-3">
-          <Image src={image} alt={`${firstName} ${lastName}`} width={48} height={48} style={{ borderRadius: '50%' }} />
-          <div>
-            <Card.Title className="mb-0">{firstName} {lastName}</Card.Title>
-            <div className="text-muted small">{address}</div>
-          </div>
-        </div>
-        <hr className="my-2" />
-        <Card.Text className="mb-0">{description}</Card.Text>
-      </Card.Body>
-    </Card>
+    <div className="card h-100">
+      {c.image ? (
+        <img className="card-img-top" src={c.image} alt={`${c.firstName} ${c.lastName}`} />
+      ) : null}
+
+      <div className="card-body">
+        <h5 className="card-title">{c.firstName} {c.lastName}</h5>
+        <h6 className="card-subtitle mb-2 text-muted">{c.address}</h6>
+        {c.description ? <p className="card-text">{c.description}</p> : null}
+      </div>
+
+      <div className="card-footer d-flex justify-content-between">
+        <small className="text-muted">
+          ID: <code>{hasId ? String(c.id) : "—"}</code>
+        </small>
+        {hasId ? (
+          // plain <a> to avoid the dev-only Performance.measure warning
+          <a href={editHref}>Edit</a>
+        ) : (
+          <span className="text-muted">No ID</span>
+        )}
+      </div>
+    </div>
   );
 }
