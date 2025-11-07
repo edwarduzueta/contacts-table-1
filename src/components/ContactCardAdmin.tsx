@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 export default function ContactCardAdmin({
   id, firstName, lastName, address, image, description,
 }: {

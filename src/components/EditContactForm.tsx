@@ -33,7 +33,6 @@ export default function EditContactForm({ contact }: { contact: EditContactField
   const onSubmit = async (data: EditContactFields) => {
     setSuccess(null); setError(null);
     try {
-      // Do NOT pass owner on update
       await editContact({
         id: data.id,
         firstName: data.firstName,
@@ -43,8 +42,8 @@ export default function EditContactForm({ contact }: { contact: EditContactField
         description: data.description,
       });
       setSuccess("Contact updated.");
-    } catch (e: any) {
-      setError(e?.message ?? "Failed to update contact.");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Failed to update contact.");
     }
   };
 

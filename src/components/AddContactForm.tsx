@@ -19,25 +19,20 @@ export default function AddContactForm({ owner }: { owner: string }) {
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<AddContactFields>({
-    resolver: yupResolver(AddContactSchema),
-    defaultValues: { firstName: "", lastName: "", address: "", image: "", description: "" },
-  });
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } =
+    useForm<AddContactFields>({
+      resolver: yupResolver(AddContactSchema),
+      defaultValues: { firstName: "", lastName: "", address: "", image: "", description: "" },
+    });
 
   const onSubmit = async (data: AddContactFields) => {
-    setSuccess(null);
-    setError(null);
+    setSuccess(null); setError(null);
     try {
       await addContact({ ...data, owner: owner || "unknown@local" });
       setSuccess("Contact added successfully.");
       reset();
-    } catch (e: any) {
-      setError(e?.message ?? "Failed to add contact.");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Failed to add contact.");
     }
   };
 

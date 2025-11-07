@@ -1,5 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
+
 type Contact = {
-  id?: number; // defensive: may be missing
+  id?: number;
   firstName: string;
   lastName: string;
   address: string;
@@ -7,11 +9,17 @@ type Contact = {
   description?: string | null;
 };
 
-// Accept either { contact: Contact } or flat props
-export default function ContactCard(
-  props: { contact: Contact } | (Contact & { contact?: never })
-) {
-  const c: Contact = "contact" in props && props.contact ? props.contact : (props as any);
+type ContactProps = { contact: Contact } | (Contact & { contact?: never });
+
+function unwrapContact(p: ContactProps): Contact {
+  if (typeof p === "object" && p !== null && "contact" in p && (p as any).contact) {
+    return (p as { contact: Contact }).contact;
+  }
+  return p as Contact;
+}
+
+export default function ContactCard(props: ContactProps) {
+  const c = unwrapContact(props);
   const hasId = typeof c.id === "number" && Number.isFinite(c.id);
   const editHref = hasId ? `/edit/${c.id}` : undefined;
 
@@ -28,15 +36,8 @@ export default function ContactCard(
       </div>
 
       <div className="card-footer d-flex justify-content-between">
-        <small className="text-muted">
-          ID: <code>{hasId ? String(c.id) : "—"}</code>
-        </small>
-        {hasId ? (
-          // plain <a> to avoid the dev-only Performance.measure warning
-          <a href={editHref}>Edit</a>
-        ) : (
-          <span className="text-muted">No ID</span>
-        )}
+        <small className="text-muted">ID: <code>{hasId ? String(c.id) : "—"}</code></small>
+        {hasId ? <a href={editHref}>Edit</a> : <span className="text-muted">No ID</span>}
       </div>
     </div>
   );
