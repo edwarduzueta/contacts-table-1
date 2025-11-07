@@ -12,8 +12,9 @@ type Contact = {
 type ContactProps = { contact: Contact } | (Contact & { contact?: never });
 
 function unwrapContact(p: ContactProps): Contact {
-  if (typeof p === "object" && p !== null && "contact" in p && (p as any).contact) {
-    return (p as { contact: Contact }).contact;
+  if (typeof p === "object" && p !== null && "contact" in p) {
+    const withContact = p as { contact: Contact };
+    return withContact.contact;
   }
   return p as Contact;
 }
